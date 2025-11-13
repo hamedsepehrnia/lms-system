@@ -140,3 +140,142 @@ export const getMyCourses = async (req, res) => {
   }
 };
 
+/**
+ * دریافت تاریخچه ثبت‌نام‌ها (سفارش‌ها) کاربر
+ */
+export const getMyEnrollments = async (req, res) => {
+  try {
+    const { status, page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const where = {
+      userId: req.user.id
+    };
+
+    if (status) {
+      where.status = status;
+    }
+
+    const [enrollments, total] = await Promise.all([
+      prisma.courseEnrollment.findMany({
+        where,
+        include: {
+          course: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              thumbnail: true,
+              price: true,
+              category: {
+                select: {
+                  id: true,
+                  title: true
+                }
+              }
+            }
+          }
+        },
+        skip,
+        take: parseInt(limit),
+        orderBy: {
+          purchasedAt: 'desc'
+        }
+      }),
+      prisma.courseEnrollment.count({ where })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        enrollments: enrollments.map(e => ({
+          id: e.id,
+          course: e.course,
+          pricePaid: Number(e.pricePaid),
+          status: e.status,
+          purchasedAt: e.purchasedAt,
+          transactionId: e.transactionId
+        })),
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('خطا در دریافت تاریخچه ثبت‌نام‌ها:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت تاریخچه ثبت‌نام‌ها'
+    });
+  }
+};
+
+/**
+ * دریافت تاریخچه تراکنش‌های کاربر
+ */
+export const getMyTransactions = async (req, res) => {
+  try {
+    const { status, page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const where = {
+      userId: req.user.id
+    };
+
+    if (status) {
+      where.status = status;
+    }
+
+    const [transactions, total] = await Promise.all([
+      prisma.transaction.findMany({
+        where,
+        include: {
+          course: {
+            select: {
+              id: true,
+              title: true,
+              slug: true
+            }
+          }
+        },
+        skip,
+        take: parseInt(limit),
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }),
+      prisma.transaction.count({ where })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        transactions: transactions.map(t => ({
+          id: t.id,
+          course: t.course,
+          amount: Number(t.amount),
+          authority: t.authority,
+          refId: t.refId,
+          status: t.status,
+          createdAt: t.createdAt
+        })),
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('خطا در دریافت تاریخچه تراکنش‌ها:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت تاریخچه تراکنش‌ها'
+    });
+  }
+};
+

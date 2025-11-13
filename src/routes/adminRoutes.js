@@ -6,7 +6,9 @@ import {
   publishCourse,
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
+  getEnrollments,
+  getTransactions
 } from '../controllers/adminController.js';
 import { requireAuth } from '../middleware/auth.js';
 import { requireRole } from '../middleware/role.js';
@@ -190,6 +192,76 @@ router.patch('/categories/:id', updateCategory);
  *         description: دسته‌بندی حذف شد
  */
 router.delete('/categories/:id', deleteCategory);
+
+/**
+ * @swagger
+ * /api/v1/admin/enrollments:
+ *   get:
+ *     summary: دریافت لیست ثبت‌نام‌ها (سفارش‌ها)
+ *     tags: [Admin]
+ *     security:
+ *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: courseId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: لیست ثبت‌نام‌ها
+ */
+router.get('/enrollments', getEnrollments);
+
+/**
+ * @swagger
+ * /api/v1/admin/transactions:
+ *   get:
+ *     summary: دریافت لیست تراکنش‌ها
+ *     tags: [Admin]
+ *     security:
+ *       - sessionAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: courseId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: لیست تراکنش‌ها
+ */
+router.get('/transactions', getTransactions);
 
 export default router;
 

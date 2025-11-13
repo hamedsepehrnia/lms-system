@@ -149,6 +149,66 @@
 						"description": "دریافت دوره‌های ثبت‌نام شده کاربر"
 					},
 					"response": []
+				},
+				{
+					"name": "Get My Enrollments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/my/enrollments?status=&page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "my", "enrollments"],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true,
+									"description": "COMPLETED, PENDING"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "دریافت تاریخچه ثبت‌نام‌ها (سفارش‌ها) کاربر"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Transactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/my/transactions?status=&page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "my", "transactions"],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true,
+									"description": "PENDING, COMPLETED, FAILED"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "دریافت تاریخچه تراکنش‌های کاربر"
+					},
+					"response": []
 				}
 			],
 			"description": "مدیریت پروفایل کاربر"
@@ -711,6 +771,86 @@
 							]
 						},
 						"description": "حذف دسته‌بندی"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Enrollments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/enrollments?status=&courseId=&userId=&page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "enrollments"],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true,
+									"description": "COMPLETED, PENDING"
+								},
+								{
+									"key": "courseId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "دریافت لیست ثبت‌نام‌ها (سفارش‌ها) - فقط برای ادمین"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/transactions?status=&courseId=&userId=&page=1&limit=20",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "transactions"],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true,
+									"description": "PENDING, COMPLETED, FAILED"
+								},
+								{
+									"key": "courseId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "دریافت لیست تراکنش‌ها - فقط برای ادمین"
 					},
 					"response": []
 				}

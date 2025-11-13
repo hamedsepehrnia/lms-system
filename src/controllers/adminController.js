@@ -267,3 +267,144 @@ export const deleteCategory = async (req, res) => {
   }
 };
 
+/**
+ * دریافت لیست ثبت‌نام‌ها (سفارش‌ها)
+ */
+export const getEnrollments = async (req, res) => {
+  try {
+    const { status, courseId, userId, page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const where = {};
+    if (status) {
+      where.status = status;
+    }
+    if (courseId) {
+      where.courseId = courseId;
+    }
+    if (userId) {
+      where.userId = userId;
+    }
+
+    const [enrollments, total] = await Promise.all([
+      prisma.courseEnrollment.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              phone: true,
+              name: true,
+              role: true
+            }
+          },
+          course: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              price: true
+            }
+          }
+        },
+        skip,
+        take: parseInt(limit),
+        orderBy: {
+          purchasedAt: 'desc'
+        }
+      }),
+      prisma.courseEnrollment.count({ where })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        enrollments,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('خطا در دریافت ثبت‌نام‌ها:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت ثبت‌نام‌ها'
+    });
+  }
+};
+
+/**
+ * دریافت لیست تراکنش‌ها
+ */
+export const getTransactions = async (req, res) => {
+  try {
+    const { status, courseId, userId, page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const where = {};
+    if (status) {
+      where.status = status;
+    }
+    if (courseId) {
+      where.courseId = courseId;
+    }
+    if (userId) {
+      where.userId = userId;
+    }
+
+    const [transactions, total] = await Promise.all([
+      prisma.transaction.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              phone: true,
+              name: true
+            }
+          },
+          course: {
+            select: {
+              id: true,
+              title: true,
+              slug: true
+            }
+          }
+        },
+        skip,
+        take: parseInt(limit),
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }),
+      prisma.transaction.count({ where })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        transactions: transactions.map(t => ({
+          ...t,
+          amount: Number(t.amount)
+        })),
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      }
+    });
+  } catch (error) {
+    console.error('خطا در دریافت تراکنش‌ها:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت تراکنش‌ها'
+    });
+  }
+};
+
