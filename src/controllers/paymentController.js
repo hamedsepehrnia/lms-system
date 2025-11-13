@@ -55,6 +55,7 @@ export const paymentCallback = async (req, res) => {
           pricePaid: transaction.amount,
           transactionId: transaction.id,
           status: 'COMPLETED'
+        }
       });
     }
 

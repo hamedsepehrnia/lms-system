@@ -23,6 +23,7 @@ model User {
   certificates  Certificate[]
   requests      InstructorRequest[]
   transactions  Transaction[]
+  courses       Course[]
 }
 
 model Category {
@@ -42,6 +43,8 @@ model Course {
   categoryId     String
   instructorId   String
   isPublished    Boolean   @default(false)
+  category       Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  instructor     User      @relation(fields: [instructorId], references: [id], onDelete: Restrict)
   enrollments    CourseEnrollment[]
   lessons        Lesson[]
   certificates   Certificate[]
