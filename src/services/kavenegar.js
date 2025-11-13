@@ -4,9 +4,31 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 /**
- * ارسال OTP از طریق Kavenegar
+ * ارسال OTP از طریق Kavenegar یا نمایش در ترمینال (Debug Mode)
  */
 export const sendOTP = async (phone, code) => {
+  // حالت Debug: نمایش کد در ترمینال به جای ارسال پیامک
+  const debugMode = process.env.OTP_DEBUG_MODE === 'true' || process.env.OTP_DEBUG_MODE === '1';
+  
+  if (debugMode) {
+    console.log('\n' + '='.repeat(60));
+    console.log('📱 DEBUG MODE - OTP Code (پیامک ارسال نشد)');
+    console.log('='.repeat(60));
+    console.log(`📞 شماره تلفن: ${phone}`);
+    console.log(`🔐 کد تایید: ${code}`);
+    console.log('⏰ مدت اعتبار: 120 ثانیه');
+    console.log('='.repeat(60) + '\n');
+    
+    // شبیه‌سازی موفقیت ارسال
+    return Promise.resolve({
+      return: {
+        status: 200,
+        message: 'OTP displayed in console (Debug Mode)'
+      }
+    });
+  }
+
+  // حالت Production: ارسال واقعی پیامک
   return new Promise((resolve, reject) => {
     const apiKey = process.env.KAVENEGAR_API_KEY;
     const sender = process.env.KAVENEGAR_SENDER || '10008663';
