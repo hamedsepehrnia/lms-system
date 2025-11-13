@@ -1,0 +1,749 @@
+{
+	"info": {
+		"_postman_id": "paya-life-lms-collection",
+		"name": "Paya Life LMS API",
+		"description": "Complete API collection for Paya Life Learning Management System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Send OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"09123456789\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/send-otp",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "send-otp"]
+						},
+						"description": "ارسال کد تایید OTP به شماره تلفن"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.success) {",
+									"        // Session cookie به صورت خودکار ذخیره می‌شود",
+									"        pm.environment.set(\"user_id\", jsonData.data.user.id);",
+									"        pm.environment.set(\"user_role\", jsonData.data.user.role);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"09123456789\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/verify-otp",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "verify-otp"]
+						},
+						"description": "تایید کد OTP و ورود به سیستم (Session ایجاد می‌شود)"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "auth", "logout"]
+						},
+						"description": "خروج از حساب کاربری (Session نابود می‌شود)"
+					},
+					"response": []
+				}
+			],
+			"description": "احراز هویت و مدیریت Session"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "me"]
+						},
+						"description": "دریافت اطلاعات کاربر جاری"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "نام کاربر",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "me"]
+						},
+						"description": "به‌روزرسانی پروفایل کاربر"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/my/courses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "my", "courses"]
+						},
+						"description": "دریافت دوره‌های ثبت‌نام شده کاربر"
+					},
+					"response": []
+				}
+			],
+			"description": "مدیریت پروفایل کاربر"
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "Get All Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/courses?page=1&limit=10&category=&search=",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "courses"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "category",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "دریافت لیست دوره‌ها با امکان فیلتر و جستجو"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course by Slug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/courses/:slug",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "courses", ":slug"],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "sample-programming-course-1234567890"
+								}
+							]
+						},
+						"description": "دریافت جزئیات یک دوره"
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll in Course",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/courses/:slug/enroll",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "courses", ":slug", "enroll"],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "sample-programming-course-1234567890"
+								}
+							]
+						},
+						"description": "ثبت‌نام در دوره (برای دوره‌های پولی لینک پرداخت برمی‌گرداند)"
+					},
+					"response": []
+				}
+			],
+			"description": "مدیریت دوره‌ها"
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "categories"]
+						},
+						"description": "دریافت لیست دسته‌بندی‌ها"
+					},
+					"response": []
+				}
+			],
+			"description": "دسته‌بندی‌ها"
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Payment Callback",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payment/callback?Authority=000000000000000000000000000000000000&Status=OK",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "payment", "callback"],
+							"query": [
+								{
+									"key": "Authority",
+									"value": "000000000000000000000000000000000000"
+								},
+								{
+									"key": "Status",
+									"value": "OK"
+								}
+							]
+						},
+						"description": "Callback پرداخت Zarinpal (این endpoint توسط Zarinpal فراخوانی می‌شود)"
+					},
+					"response": []
+				}
+			],
+			"description": "پرداخت آنلاین"
+		},
+		{
+			"name": "Progress",
+			"item": [
+				{
+					"name": "Update Progress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lessonId\": \"lesson-uuid-here\",\n  \"isCompleted\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/progress",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "progress"]
+						},
+						"description": "ثبت یا به‌روزرسانی پیشرفت کاربر در یک درس"
+					},
+					"response": []
+				}
+			],
+			"description": "مدیریت پیشرفت کاربر"
+		},
+		{
+			"name": "Certificates",
+			"item": [
+				{
+					"name": "Get My Certificates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/certificates",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "certificates"]
+						},
+						"description": "دریافت لیست گواهینامه‌های کاربر"
+					},
+					"response": []
+				},
+				{
+					"name": "Download Certificate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/certificates/:id/download",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "certificates", ":id", "download"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "certificate-uuid-here"
+								}
+							]
+						},
+						"description": "دانلود گواهینامه PDF"
+					},
+					"response": []
+				}
+			],
+			"description": "گواهینامه‌ها"
+		},
+		{
+			"name": "Instructor",
+			"item": [
+				{
+					"name": "Request Instructor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/instructor/request",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "instructor", "request"]
+						},
+						"description": "درخواست تبدیل به مدرس"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Instructor Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/instructor/my-courses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "instructor", "my-courses"]
+						},
+						"description": "دریافت دوره‌های مدرس"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Course",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "عنوان دوره",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "توضیحات دوره",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "100000",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "category-uuid-here",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/instructor/courses",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "instructor", "courses"]
+						},
+						"description": "ایجاد دوره جدید"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Course",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "عنوان به‌روزرسانی شده",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "توضیحات به‌روزرسانی شده",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "price",
+									"value": "150000",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/instructor/courses/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "instructor", "courses", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "course-uuid-here"
+								}
+							]
+						},
+						"description": "به‌روزرسانی دوره"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Lesson to Course",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "عنوان درس",
+									"type": "text"
+								},
+								{
+									"key": "orderIndex",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "1200",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "isFree",
+									"value": "false",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "video",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/instructor/courses/:id/lessons",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "instructor", "courses", ":id", "lessons"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "course-uuid-here"
+								}
+							]
+						},
+						"description": "افزودن درس به دوره"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sales Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/instructor/sales-report",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "instructor", "sales-report"]
+						},
+						"description": "گزارش فروش مدرس"
+					},
+					"response": []
+				}
+			],
+			"description": "مدیریت مدرس"
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "dashboard"]
+						},
+						"description": "آمار کلی سیستم"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Instructor Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/instructor-requests?status=",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "instructor-requests"],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true,
+									"description": "PENDING, APPROVED, REJECTED"
+								}
+							]
+						},
+						"description": "دریافت لیست درخواست‌های مدرس"
+					},
+					"response": []
+				},
+				{
+					"name": "Handle Instructor Request",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"APPROVED\",\n  \"adminMessage\": \"درخواست شما تایید شد\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/instructor-requests/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "instructor-requests", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "request-uuid-here"
+								}
+							]
+						},
+						"description": "تایید یا رد درخواست مدرس (status: APPROVED یا REJECTED)"
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Course",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isPublished\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/courses/:id/publish",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "courses", ":id", "publish"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "course-uuid-here"
+								}
+							]
+						},
+						"description": "انتشار یا عدم انتشار دوره"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"دسته‌بندی جدید\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "categories"]
+						},
+						"description": "ایجاد دسته‌بندی جدید"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"عنوان به‌روزرسانی شده\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/categories/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "category-uuid-here"
+								}
+							]
+						},
+						"description": "به‌روزرسانی دسته‌بندی"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/categories/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "admin", "categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "category-uuid-here"
+								}
+							]
+						},
+						"description": "حذف دسته‌بندی"
+					},
+					"response": []
+				}
+			],
+			"description": "مدیریت ادمین"
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "بررسی سلامت سرور"
+					},
+					"response": []
+				}
+			],
+			"description": "بررسی سلامت سیستم"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
+
