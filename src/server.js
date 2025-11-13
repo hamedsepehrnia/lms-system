@@ -6,8 +6,8 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`✅ سرور در حال اجرا است روی پورت ${PORT}`);
-  console.log(`📚 مستندات API: ${process.env.BASE_URL || 'http://localhost:3000'}/api-docs`);
+  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`📚 API Documentation: ${process.env.BASE_URL || 'http://localhost:3000'}/api-docs`);
   console.log(`🏥 Health check: ${process.env.BASE_URL || 'http://localhost:3000'}/health`);
 });
 
