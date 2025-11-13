@@ -1,0 +1,40 @@
+{
+  "name": "paya-life-lms",
+  "version": "1.0.0",
+  "description": "سیستم مدیریت یادگیری آنلاین (LMS) با احراز هویت مبتنی بر سشن",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "seed": "node src/seed.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "keywords": ["lms", "course", "education", "persian"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
+    "jalali-moment": "^3.3.11",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.13.1",
+    "pdfkit": "^0.15.0",
+    "qrcode": "^1.5.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.19.1"
+  }
+}
+

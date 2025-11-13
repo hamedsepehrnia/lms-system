@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  phone         String   @unique
+  name          String?
+  role          Role     @default(STUDENT)
+  avatar        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  enrollments   CourseEnrollment[]
+  progress      UserProgress[]
+  certificates  Certificate[]
+  requests      InstructorRequest[]
+  transactions  Transaction[]
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  title    String
+  slug     String    @unique
+  courses  Course[]
+}
+
+model Course {
+  id             String    @id @default(uuid())
+  title          String
+  slug           String    @unique
+  description    String?
+  price          BigInt
+  thumbnail      String?
+  categoryId     String
+  instructorId   String
+  isPublished    Boolean   @default(false)
+  enrollments    CourseEnrollment[]
+  lessons        Lesson[]
+  certificates   Certificate[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Lesson {
+  id         String   @id @default(uuid())
+  courseId   String
+  title      String
+  videoUrl   String
+  duration   Int?
+  orderIndex Int
+  isFree     Boolean  @default(false)
+  progress   UserProgress[]
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model CourseEnrollment {
+  id            String  @id @default(uuid())
+  userId        String
+  courseId      String
+  purchasedAt   DateTime @default(now())
+  pricePaid     BigInt
+  transactionId String?
+  status        String   @default("PENDING")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model UserProgress {
+  userId     String
+  lessonId   String
+  isCompleted Boolean @default(false)
+  completedAt DateTime?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson     Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([userId, lessonId])
+}
+
+model Certificate {
+  id                String   @id @default(uuid())
+  userId            String
+  courseId          String
+  issuedAt          DateTime @default(now())
+  certificateNumber String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course            Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model InstructorRequest {
+  id           String  @id @default(uuid())
+  userId       String
+  status       String  @default("PENDING")
+  adminMessage String?
+  createdAt    DateTime @default(now())
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id        String  @id @default(uuid())
+  userId    String
+  courseId  String?
+  amount    BigInt
+  authority String?
+  refId     String?
+  status    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  sid    String   @id
+  sess   Json
+  expire DateTime
+
+  @@index([expire])
+}
+
+model Otp {
+  id        String   @id @default(uuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([phone, expiresAt])
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
